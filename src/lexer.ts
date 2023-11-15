@@ -8,6 +8,10 @@ export enum TokenType { // handle token type
     ClosePar,
 }
 
+const KEYWORDS: Record<string, TokenType> = {
+    "set": TokenType.Set,
+}
+
 export interface Token { // handle token
     value: string,
     type: TokenType,
@@ -26,6 +30,10 @@ function isint(src: string) { // check int
     const bounds = ['0'.charCodeAt(0), '9'.charCodeAt(0)];
 
     return (c >= bounds[0] && c <= bounds[1]);
+}
+
+function isskip(str: string) {
+    return str == ' '  || str == '\n' || str == '\t';
 }
 
 export function tokenizeCode (source: string): Token[] {
@@ -56,8 +64,18 @@ export function tokenizeCode (source: string): Token[] {
                 while(src.length > 0 && isal(src[0])) {
                     id += src.shift();
                 }
+                
+                const reserve = KEYWORDS[id];
 
-                tokens.push(token(id, TokenType.Id));
+                if(reserve == undefined) {
+                    tokens.push(token(id, TokenType.Id));;
+                } else {
+                    tokens.push(token(id, reserve));
+                }
+            } else if(isskip(src[0])) {
+                src.shift();
+            } else {
+                console.log("psharp.core: (Unreconized character in source: " + src[0] + ")");
             }
         }
     }

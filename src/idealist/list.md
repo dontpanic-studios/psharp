@@ -29,3 +29,5 @@ if this eq 10 {
     prtlog("nahhhhh");
 }
 ```
+
+- ex) ~동안
