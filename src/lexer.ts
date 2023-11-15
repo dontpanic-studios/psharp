@@ -50,6 +50,14 @@ export function tokenizeCode (source: string): Token[] {
                 }
 
                 tokens.push(token(num, TokenType.Num));
+            } else if(isal(src[0])) {
+                let id = "";
+
+                while(src.length > 0 && isal(src[0])) {
+                    id += src.shift();
+                }
+
+                tokens.push(token(id, TokenType.Id));
             }
         }
     }
