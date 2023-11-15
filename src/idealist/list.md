@@ -5,7 +5,6 @@
 // simple hello world
 
 prtlog("Hello, World!");
-dn
 ```
 
 - ex) 만약에
@@ -16,5 +15,17 @@ if this eq 10
 then prtlog("true");
 or if prtlog("kinda true");
 or not prtlog("false");
-dn
+```
+
+아니면
+ 
+```
+// ver 2
+set this = 10;
+
+if this eq 10 {
+    prtlog("this shit is cool");
+} or {
+    prtlog("nahhhhh");
+}
 ```
