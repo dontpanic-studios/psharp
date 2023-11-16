@@ -29,7 +29,7 @@ function isal(src: string) {
 }
 
 function isskip(str: string) {
-	return str == " " || str == "\n" || str == "\t";
+	return str == " " || str == "\n" || str == "\t" || str == "//";
 }
 
 function isint(str: string) {

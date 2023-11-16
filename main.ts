@@ -11,7 +11,7 @@ repl();
 function repl() {
      const parse = new Parser();
 
-     console.log("P# Language\nhttps://studio.dontpanic.kro.kr/");
+     console.log("P# 1.0.0 (in deno)\nType 'core.exit()' to exit program.");
 
      while(true) {
         const input = prompt("> ");

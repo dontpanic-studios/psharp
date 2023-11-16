@@ -47,3 +47,11 @@ func coolfunction() {
 coolfunction();
 ```
 
+- ex) import modueles
+```python
+use { test } which in 'moduletest.ps';
+
+test.run();
+
+prtlog("SUP DONE.");
+```
