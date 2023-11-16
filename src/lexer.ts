@@ -1,4 +1,5 @@
 export enum TokenType {
+	Null,
 	Number,
 	Identifier,
 	Set,
@@ -11,6 +12,7 @@ export enum TokenType {
 
 const KEYWORDS: Record<string, TokenType> = {
 	set: TokenType.Set,
+	null: TokenType.Null,
 };
 
 export interface Token {
@@ -46,7 +48,7 @@ export function tokenize(sourceCode: string): Token[] {
 		} else if (src[0] == ")") {
 			tokens.push(token(src.shift(), TokenType.CloseParen));
 		}
-		else if (src[0] == "+" || src[0] == "-" || src[0] == "*" || src[0] == "/") {
+		else if (src[0] == "+" || src[0] == "-" || src[0] == "*" || src[0] == "/" || src[0] == "%") {
 			tokens.push(token(src.shift(), TokenType.BinaryOperator));
 		}
 		else if (src[0] == "=") {
@@ -67,7 +69,7 @@ export function tokenize(sourceCode: string): Token[] {
 				}
 
 				const reserved = KEYWORDS[ident];
-				if (reserved) {
+				if (typeof reserved == "number") {
 					tokens.push(token(ident, reserved));
 				} else {
 					tokens.push(token(ident, TokenType.Identifier));
@@ -77,7 +79,7 @@ export function tokenize(sourceCode: string): Token[] {
 			}
 			else {
 				console.error(
-					"psharp.core: Unreconized character found in source: ",
+					"psharp.core: unreconized character found in source: ",
 					src[0].charCodeAt(0),
 					src[0]
 				);

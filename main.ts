@@ -7,7 +7,7 @@ import Parser from "./src/parser.ts";
 
 repl();
 
-async function repl() {
+function repl() {
      const parse = new Parser();
 
      console.log("P# Language\nhttps://studio.dontpanic.kro.kr/");

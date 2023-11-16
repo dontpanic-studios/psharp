@@ -1,6 +1,7 @@
 export type NodeType =
   | "Program"
   | "NumLit"
+  | "NullLit"
   | "Identifier"
   | "BinaryExpr";
 
@@ -33,9 +34,14 @@ export interface NumLit extends Expr {
     value: number;
 }
 
+export interface NullLit extends Expr {
+    kind: "NullLit";
+    value: "null";
+}
+
 /*
 func coolfunction() {
 
-    synbiL
+    // do something synbiL
 }
 */

@@ -46,10 +46,56 @@ export default class Parser {
     }
 
     private parse_expr() : Expr {
-        return this.parse_prim_expr();
+        return this.parseAdditExpr();
     }
 
-    private parse_prim_expr() : Expr {
+    private expect(type: TokenType, err: any) {
+        const prev = this.tokens.shift() as Token;
+
+        if(!prev || prev.type != type) {
+            console.error("psharp.parser: ", err, prev, "Expected: ", type);
+            Deno.exit(1);
+        }
+
+        return prev;
+    }
+
+    private parseAdditExpr() : Expr {
+        let left = this.parseMutilExpr();
+
+        while (this.at().value == "+" || this.at().value == "-") {
+            const operator = this.eh_at().value;
+            const right = this.parseMutilExpr();
+            left = {
+                kind: "BinaryExpr",
+                left,
+                right,
+                operator,
+            } as BinaryExpr;
+        }
+
+        return left;
+    }
+
+    private parseMutilExpr() : Expr {
+        let left = this.parsePrim();
+
+        while (this.at().value == "/" || this.at().value == "*" || this.at().value == "%") {
+            const operator = this.eh_at().value;
+            const right = this.parsePrim();
+            left = {
+                kind: "BinaryExpr",
+                left,
+                right,
+                operator,
+            } as BinaryExpr;
+        }
+
+        return left;
+    }
+
+
+    private parsePrim() : Expr {
         // parse current token
         const tk = this.at().type;
 
@@ -57,7 +103,15 @@ export default class Parser {
             case TokenType.Number:
                 return { kind: "NumLit", value: parseFloat(this.eh_at().value) } as NumLit; 
             case TokenType.Identifier:
-                return { kind: "Identifier", symbol: this.eh_at().value } as Identifier; 
+                return { kind: "Identifier", symbol: this.eh_at().value } as Identifier;
+            case TokenType.OpenParen: { 
+                this.eh_at();
+                const val = this.parse_expr();
+                this.expect(TokenType.CloseParen, "psharp.parser: unexpected token found in expression, expected: ')'",);
+
+                return val;
+            }
+            case TokenType.CloseParen:
             default:
                 console.error("psharp.core: unexpeced token during parse, ", this.at());
                 Deno.exit(1);

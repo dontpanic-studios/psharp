@@ -11,10 +11,11 @@ prtlog("Hello, World!");
 ```
 // then = if {}, or = else, or if = else if, not = -1
 
-if this eq 10 
-then prtlog("true");
-or if prtlog("kinda true");
-or not prtlog("false");
+if () {
+
+} then if () {
+
+} then {}
 ```
 
 아니면
@@ -23,11 +24,19 @@ or not prtlog("false");
 // ver 2
 set this = 10;
 
-if this eq 10 {
+if (this eq 10) {
     prtlog("this shit is cool");
-} or {
-    prtlog("nahhhhh");
+} then {
+    prtlog("false");
 }
 ```
 
 - ex) ~동안
+```
+// while ex
+while (true) {
+    prtlog("yeahhhh");
+} then {
+    prtlog("notcool");
+}
+```
