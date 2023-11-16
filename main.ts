@@ -4,6 +4,7 @@ Made in TypeScript, by DONT PAN!C STUDIOS.
 */
 
 import Parser from "./src/parser.ts";
+import { evalhandle } from "./src/runtime/interpreter.ts";
 
 repl();
 
@@ -22,6 +23,7 @@ function repl() {
 
         const program = parse.produceAST(input);
 
-        console.log(program);
+        const result = evalhandle(program);
+        console.log(result);
      }
 }
