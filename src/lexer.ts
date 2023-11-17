@@ -1,5 +1,4 @@
 export enum TokenType {
-	Null,
 	Number,
 	Identifier,
 	Set,
@@ -12,7 +11,6 @@ export enum TokenType {
 
 const KEYWORDS: Record<string, TokenType> = {
 	set: TokenType.Set,
-	null: TokenType.Null,
 };
 
 export interface Token {

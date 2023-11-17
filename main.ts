@@ -5,7 +5,7 @@ Made in TypeScript, by DONT PAN!C STUDIOS.
 
 import Parser from "./src/parser.ts";
 import { evalhandle } from "./src/runtime/interpreter.ts";
-import { NumValHandle } from "./src/runtime/valuelist.ts";
+import { MK_NUM, MK_NULL, MK_BOOL } from "./src/runtime/valuelist.ts";
 import Env from "./src/runtime/env.ts";
 
 repl();
@@ -14,7 +14,10 @@ function repl() {
      const parse = new Parser();
      const env = new Env();
 
-     env.declareVar('x', { value: 777, type: "number" } as NumValHandle);
+     env.declareVar('psharptestvar', MK_NUM(100));
+     env.declareVar('true', MK_BOOL(true));
+     env.declareVar('null', MK_NULL());
+     env.declareVar('false', MK_BOOL(false));
 
      console.log("P# 1.0.0 (in deno)\nType 'core.exit()' or  'exit' to exit program.");
 

@@ -2,7 +2,6 @@
 export type NodeType =
   | "Program"
   | "NumLit"
-  | "NullLit"
   | "Identifier"
   | "BinaryExpr";
 
@@ -33,11 +32,6 @@ export interface Identifier extends Expr {
 export interface NumLit extends Expr {
     kind: "NumLit";
     value: number;
-}
-
-export interface NullLit extends Expr {
-    kind: "NullLit";
-    value: "null";
 }
 
 /*

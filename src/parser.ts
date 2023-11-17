@@ -2,7 +2,6 @@ import {
     BinaryExpr,
     Expr,
     Identifier,
-    NullLit,
     NumLit,
     Program,
     stmt,
@@ -105,9 +104,6 @@ export default class Parser {
                 return { kind: "NumLit", value: parseFloat(this.eh_at().value) } as NumLit; 
             case TokenType.Identifier: // handle id
                 return { kind: "Identifier", symbol: this.eh_at().value } as Identifier;
-            case TokenType.Null: // handle null
-                this.eh_at();
-                return { kind: "NullLit", value: "null"} as NullLit;
             case TokenType.OpenParen: { 
                 this.eh_at();
                 const val = this.parse_expr();

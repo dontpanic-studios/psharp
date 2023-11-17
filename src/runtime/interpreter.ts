@@ -2,9 +2,10 @@
 import { RuntimeValHandle, NumValHandle, NullValHandle } from './valuelist.ts';
 import { stmt, NumLit, BinaryExpr, Program, Identifier } from '../ast.ts';
 import Env from './env.ts';
+import { MK_NULL } from './valuelist.ts';
 
 function evalPrgmExpr(program: Program, env: Env): RuntimeValHandle {
-    let lastEvalVal: RuntimeValHandle = { type: "null", value: "null" } as NullValHandle;
+    let lastEvalVal: RuntimeValHandle = MK_NULL();
 
     for (const statement of program.body) {
         lastEvalVal = evalhandle(statement, env);
@@ -44,15 +45,13 @@ function evalBinExpr(binop: BinaryExpr, env: Env): RuntimeValHandle {
         return evalNumBinExpr(lefthandlein as NumValHandle, righthandlein as NumValHandle, binop.operator);
     }
 
-    return { type: "null", value: "null" } as NullValHandle;
+    return MK_NULL();
 }
 
 export function evalhandle(astNode: stmt, env: Env): RuntimeValHandle {
     switch(astNode.kind) {
         case 'NumLit':
             return { value: ((astNode as NumLit).value), type: "number" } as NumValHandle;
-        case "NullLit":
-                return { value: "null", type: "null" } as NullValHandle;
         case "Identifier":
             return evalId(astNode as Identifier, env)
         case "BinaryExpr":
