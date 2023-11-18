@@ -3,8 +3,8 @@ export type NodeType =
   | "Program"
   | "NumLit"
   | "Identifier"
-  | "BinaryExpr";
-
+  | "BinaryExpr"
+  | "VarDelcleation";
 
 export interface stmt {
     kind: NodeType;
@@ -13,6 +13,13 @@ export interface stmt {
 export interface Program extends stmt {
     kind: "Program";
     body: stmt[];
+}
+
+export interface VarDelcleation extends stmt {
+    kind: "VarDelcleation";
+    constant: boolean;
+    id: string;
+    value?: Expr;
 }
 
 export interface Expr extends stmt {}

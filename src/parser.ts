@@ -7,6 +7,7 @@ import {
     stmt,
   } from "./ast.ts";
 import { tokenize, Token, TokenType } from "./lexer.ts";
+import { VarDelcleation } from "./ast.ts";
 
 export default class Parser {
     private tokens: Token[] = [];
@@ -42,7 +43,34 @@ export default class Parser {
 
     private parse_stmt () : stmt {
         // skip parse expr
-        return this.parse_expr();
+        switch (this.at().type) {
+            case TokenType.Set:
+                return this.parseVarDeclare();
+            case TokenType.Stuck:
+                return this.parseVarDeclare();
+            default:
+                return this.parse_expr();
+        }
+    }
+
+    parseVarDeclare(): stmt {
+        const isConst = this.eh_at().type == TokenType.Stuck;
+        const ident = this.expect(TokenType.Identifier, "couldn't found any identifier name after (set/stuck), ").value;
+
+        if(this.at().type == TokenType.SemiColon) {
+            this.eh_at();
+            if(isConst) {
+                throw "psharp.parser: must assign this value to stuck, no value provived.";
+            }
+
+            return { kind: "VarDelcleation", constant: false, id: ident } as VarDelcleation;
+        }
+
+        this.expect(TokenType.Equals, "equals token following id in var delclaration, ")
+        const delcare = { kind: "VarDelcleation", id: ident, value: this.parse_expr(), constant: isConst } as VarDelcleation;
+
+        this.expect(TokenType.SemiColon, "variable declaration statment must end with semicolon, ")
+        return delcare;
     }
 
     private parse_expr() : Expr {

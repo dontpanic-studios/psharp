@@ -13,7 +13,8 @@ repl();
 function repl() {
      const parse = new Parser();
      const env = new Env();
-
+    
+    // setup default variables
      env.declareVar('psharptestvar', MK_NUM(100));
      env.declareVar('true', MK_BOOL(true));
      env.declareVar('null', MK_NULL());
@@ -21,7 +22,7 @@ function repl() {
 
      console.log("P# 1.0.0 (in deno)\nType 'core.exit()' or  'exit' to exit program.");
 
-     while(true) {
+     while(true) { // main function
         const input = prompt("> ");
 
         if(!input || input.includes("core.exit()") || input.includes("exit")) {

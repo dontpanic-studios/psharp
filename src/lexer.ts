@@ -2,8 +2,10 @@ export enum TokenType {
 	Number,
 	Identifier,
 	Set,
+	Stuck,
 	BinaryOperator,
 	Equals,
+	SemiColon,
 	OpenParen,
 	CloseParen,
 	EOF,
@@ -11,6 +13,7 @@ export enum TokenType {
 
 const KEYWORDS: Record<string, TokenType> = {
 	set: TokenType.Set,
+	stuck: TokenType.Stuck,
 };
 
 export interface Token {
@@ -45,14 +48,13 @@ export function tokenize(sourceCode: string): Token[] {
 			tokens.push(token(src.shift(), TokenType.OpenParen));
 		} else if (src[0] == ")") {
 			tokens.push(token(src.shift(), TokenType.CloseParen));
-		}
-		else if (src[0] == "+" || src[0] == "-" || src[0] == "*" || src[0] == "/" || src[0] == "%") {
+		} else if (src[0] == "+" || src[0] == "-" || src[0] == "*" || src[0] == "/" || src[0] == "%") {
 			tokens.push(token(src.shift(), TokenType.BinaryOperator));
-		}
-		else if (src[0] == "=") {
+		} else if (src[0] == "=") {
 			tokens.push(token(src.shift(), TokenType.Equals));
-        }
-		else {
+        } else if (src[0] == ";") {
+			tokens.push(token(src.shift(), TokenType.SemiColon));
+        } else {
 			if (isint(src[0])) {
 				let num = "";
 				while (src.length > 0 && isint(src[0])) {
@@ -74,8 +76,7 @@ export function tokenize(sourceCode: string): Token[] {
 				}
 			} else if (isskip(src[0])) {
 				src.shift();
-			}
-			else {
+			} else {
 				console.error(
 					"psharp.core: unreconized character found in source: ",
 					src[0].charCodeAt(0),
