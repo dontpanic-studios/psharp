@@ -1,5 +1,5 @@
 import { NumValHandle, RuntimeValHandle } from "../valuelist.ts";
-import { Identifier, BinaryExpr } from "../../ast.ts";
+import { Identifier, BinaryExpr, AssignmentExpr } from "../../ast.ts";
 import { evalhandle } from "../interpreter.ts";
 import Env from "../env.ts";
 import { MK_NULL } from "../valuelist.ts";
@@ -36,4 +36,13 @@ export function evalBinExpr(binop: BinaryExpr, env: Env): RuntimeValHandle {
     }
 
     return MK_NULL();
+}
+
+export function evalAssign(node: AssignmentExpr, env: Env): RuntimeValHandle {
+    if(node.assign.kind != "Identifier") {
+        throw 'psharp.evalhandler.expression: invalid LeftHandShaker inside assignment expression: ' + JSON.stringify(node.assign);
+    }
+    
+    const varname = (node.assign as Identifier).symbol;
+    return env.assignVar(varname, evalhandle(node.value, env));
 }

@@ -5,6 +5,7 @@ import {
     NumLit,
     Program,
     stmt,
+    AssignmentExpr,
   } from "./ast.ts";
 import { tokenize, Token, TokenType } from "./lexer.ts";
 import { VarDelcleation } from "./ast.ts";
@@ -12,15 +13,15 @@ import { VarDelcleation } from "./ast.ts";
 export default class Parser {
     private tokens: Token[] = [];
 
-    private not_eof (): boolean {
+    private notEof(): boolean {
         return this.tokens[0].type != TokenType.EOF;
     }
 
-    private at () {
+    private at() {
         return this.tokens[0] as Token;
     }
 
-    private eh_at() {
+    private EnhancedAtFunc() {
         const prev = this.tokens.shift() as Token;
 
         return prev;
@@ -34,14 +35,14 @@ export default class Parser {
           body: [],
         };
 
-        while (this.not_eof()) {
-            program.body.push(this.parse_stmt());
+        while (this.notEof()) {
+            program.body.push(this.parseStmt());
         }
     
         return program;
     }
 
-    private parse_stmt () : stmt {
+    private parseStmt() : stmt {
         // skip parse expr
         switch (this.at().type) {
             case TokenType.Set:
@@ -49,16 +50,16 @@ export default class Parser {
             case TokenType.Stuck:
                 return this.parseVarDeclare();
             default:
-                return this.parse_expr();
+                return this.parseExpr();
         }
     }
 
     parseVarDeclare(): stmt {
-        const isConst = this.eh_at().type == TokenType.Stuck;
+        const isConst = this.EnhancedAtFunc().type == TokenType.Stuck;
         const ident = this.expect(TokenType.Identifier, "couldn't found any identifier name after (set/stuck), ").value;
 
         if(this.at().type == TokenType.SemiColon) {
-            this.eh_at();
+            this.EnhancedAtFunc();
             if(isConst) {
                 throw "psharp.parser: must assign this value to stuck, no value provived.";
             }
@@ -67,16 +68,29 @@ export default class Parser {
         }
 
         this.expect(TokenType.Equals, "equals token following id in var delclaration, ")
-        const delcare = { kind: "VarDelcleation", id: ident, value: this.parse_expr(), constant: isConst } as VarDelcleation;
+        const delcare = { kind: "VarDelcleation", id: ident, value: this.parseExpr(), constant: isConst } as VarDelcleation;
 
         this.expect(TokenType.SemiColon, "variable declaration statment must end with semicolon, ")
         return delcare;
     }
 
-    private parse_expr() : Expr {
-        return this.parseAdditExpr();
+    private parseExpr() : Expr {
+        return this.parseAssignExpr();
     }
 
+    private parseAssignExpr(): Expr {
+        const left = this.parseAdditExpr();
+
+        if(this.at().type == TokenType.Equals) {
+            this.EnhancedAtFunc();
+            const value = this.parseAssignExpr();
+
+            return { value, assign: left, kind: "AssignmentExpr" } as AssignmentExpr;
+        }
+
+        return left;
+    }
+ 
     private expect(type: TokenType, err: any) {
         const prev = this.tokens.shift() as Token;
 
@@ -92,7 +106,7 @@ export default class Parser {
         let left = this.parseMutilExpr();
 
         while (this.at().value == "+" || this.at().value == "-") {
-            const operator = this.eh_at().value;
+            const operator = this.EnhancedAtFunc().value;
             const right = this.parseMutilExpr();
             left = {
                 kind: "BinaryExpr",
@@ -109,7 +123,7 @@ export default class Parser {
         let left = this.parsePrim();
 
         while (this.at().value == "/" || this.at().value == "*" || this.at().value == "%") {
-            const operator = this.eh_at().value;
+            const operator = this.EnhancedAtFunc().value;
             const right = this.parsePrim();
             left = {
                 kind: "BinaryExpr",
@@ -129,12 +143,12 @@ export default class Parser {
 
         switch(tk) {
             case TokenType.Number: // handle num
-                return { kind: "NumLit", value: parseFloat(this.eh_at().value) } as NumLit; 
+                return { kind: "NumLit", value: parseFloat(this.EnhancedAtFunc().value) } as NumLit; 
             case TokenType.Identifier: // handle id
-                return { kind: "Identifier", symbol: this.eh_at().value } as Identifier;
+                return { kind: "Identifier", symbol: this.EnhancedAtFunc().value } as Identifier;
             case TokenType.OpenParen: { 
-                this.eh_at();
-                const val = this.parse_expr();
+                this.EnhancedAtFunc();
+                const val = this.parseExpr();
                 this.expect(TokenType.CloseParen, "psharp.parser: unexpected token found in expression, expected: ')'",);
 
                 return val;

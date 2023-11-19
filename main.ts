@@ -15,12 +15,12 @@ function repl() {
      const env = new Env();
     
     // setup default variables
-     env.declareVar('psharptestvar', MK_NUM(100));
-     env.declareVar('true', MK_BOOL(true));
-     env.declareVar('null', MK_NULL());
-     env.declareVar('false', MK_BOOL(false));
+     env.declareVar('psharptestvar', MK_NUM(100), true);
+     env.declareVar('true', MK_BOOL(true), true);
+     env.declareVar('null', MK_NULL(), true);
+     env.declareVar('false', MK_BOOL(false), true);
 
-     console.log("P# 1.0.0 (in deno)\nType 'core.exit()' or  'exit' to exit program.");
+     console.log("P# 1.0.0 (in deno)\nType 'core.exit()' or 'exit' to exit program.");
 
      while(true) { // main function
         const input = prompt("> ");

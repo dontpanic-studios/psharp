@@ -4,10 +4,17 @@ export type NodeType =
   | "NumLit"
   | "Identifier"
   | "BinaryExpr"
+  | "AssignmentExpr"
   | "VarDelcleation";
 
 export interface stmt {
     kind: NodeType;
+}
+
+export interface AssignmentExpr extends Expr {
+    kind: "AssignmentExpr";
+    assign: Expr;
+    value: Expr;
 }
 
 export interface Program extends stmt {
@@ -40,10 +47,3 @@ export interface NumLit extends Expr {
     kind: "NumLit";
     value: number;
 }
-
-/*
-func coolfunction() {
-
-    // do something synbiL
-}
-*/

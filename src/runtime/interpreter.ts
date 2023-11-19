@@ -1,10 +1,10 @@
 // deno-lint-ignore-file
 import { RuntimeValHandle, NumValHandle } from './valuelist.ts';
-import { stmt, NumLit, BinaryExpr, Program, Identifier } from '../ast.ts';
+import { stmt, NumLit, BinaryExpr, Program, Identifier, AssignmentExpr } from '../ast.ts';
 import Env from './env.ts';
 import { VarDelcleation } from '../ast.ts';
 import { evalPrgmExpr, evalVarDeclare } from './evalhandler/eval_Statements.ts';
-import { evalId, evalBinExpr } from './evalhandler/eval_Expressions.ts';
+import { evalId, evalBinExpr, evalAssign } from './evalhandler/eval_Expressions.ts';
 
 
 export function evalhandle(astNode: stmt, env: Env): RuntimeValHandle {
@@ -19,6 +19,8 @@ export function evalhandle(astNode: stmt, env: Env): RuntimeValHandle {
             return evalPrgmExpr(astNode as Program, env);
         case "VarDelcleation":
             return evalVarDeclare(astNode as VarDelcleation, env);
+        case "AssignmentExpr":
+            return evalAssign(astNode as AssignmentExpr, env);
         default:
             console.error('psharp.interpret: ast not has not been setup for interpret,\n ', astNode)
             Deno.exit(0);
