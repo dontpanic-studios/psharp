@@ -3,17 +3,30 @@ psharp - environment script
 */
 
 import { RuntimeValHandle } from "./valuelist.ts";
+import { MK_BOOL, MK_NULL } from "./valuelist.ts";
+
+export function setupGlobalScope() {
+    const env = new Env();
+
+    env.declareVar('true', MK_BOOL(true), true);
+    env.declareVar('null', MK_NULL(), true);
+    env.declareVar('false', MK_BOOL(false), true);
+
+    return env;
+}
 
 export default class Env {
-
     private parent?: Env;
     private varibs: Map<string, RuntimeValHandle>;
     private constants: Set<string>;
 
     constructor (parentENV?: Env) {
+        const global = parentENV ? true : false;
+
         this.parent = parentENV;
         this.varibs = new Map();
         this.constants = new Set();
+
     }
 
     public declareVar (varname: string, value: RuntimeValHandle, constant: boolean): RuntimeValHandle {

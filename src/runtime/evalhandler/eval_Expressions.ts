@@ -1,5 +1,5 @@
-import { NumValHandle, RuntimeValHandle } from "../valuelist.ts";
-import { Identifier, BinaryExpr, AssignmentExpr } from "../../ast.ts";
+import { NumValHandle, ObjectValHandle, RuntimeValHandle } from "../valuelist.ts";
+import { Identifier, BinaryExpr, AssignmentExpr, ObjectLit } from "../../ast.ts";
 import { evalhandle } from "../interpreter.ts";
 import Env from "../env.ts";
 import { MK_NULL } from "../valuelist.ts";
@@ -45,4 +45,17 @@ export function evalAssign(node: AssignmentExpr, env: Env): RuntimeValHandle {
     
     const varname = (node.assign as Identifier).symbol;
     return env.assignVar(varname, evalhandle(node.value, env));
+}
+
+export function evalObjectExpr(obj: ObjectLit, env: Env): RuntimeValHandle {
+    const object =  { type: "object", properties: new Map() } as ObjectValHandle;
+
+    for (const { key, value } of obj.properties) {
+        console.log(key, value);
+        const runtimeVal = (value == undefined) ? env.lookup(key) : evalhandle(value, env);
+
+        object.properties.set(key, runtimeVal);
+    }
+    
+    return object;
 }

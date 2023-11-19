@@ -6,6 +6,8 @@ import {
     Program,
     stmt,
     AssignmentExpr,
+    Property,
+    ObjectLit,
   } from "./ast.ts";
 import { tokenize, Token, TokenType } from "./lexer.ts";
 import { VarDelcleation } from "./ast.ts";
@@ -79,7 +81,7 @@ export default class Parser {
     }
 
     private parseAssignExpr(): Expr {
-        const left = this.parseAdditExpr();
+        const left = this.parseObjExpr();
 
         if(this.at().type == TokenType.Equals) {
             this.EnhancedAtFunc();
@@ -90,7 +92,43 @@ export default class Parser {
 
         return left;
     }
+
+    private parseObjExpr(): Expr {
+        if(this.at().type !== TokenType.OpenBrace) {
+            return this.parseAdditExpr();
+        }
+
+        this.EnhancedAtFunc();
+        const properties = new Array<Property>();
+
+        while(this.notEof() && this.at().type != TokenType.CloseBrace) {
+            const key = this.expect(TokenType.Identifier, 'object literal key exprected').value;
+            
+            if(this.at().type == TokenType.Comma) {
+                this.EnhancedAtFunc();
+                properties.push({key, kind: "Property", value: undefined} as Property);
+                continue;
+            } else if(this.at().type == TokenType.CloseBrace) {
+                properties.push({key, kind: "Property"} as Property);
+                continue;
+            }
+
+            this.expect(TokenType.Colon, "missing colon following identifier in objectexpr.");
+            const value = this.parseExpr();
+
+            properties.push({ kind: "Property", value, key });
+
+            if(this.at().type != TokenType.CloseBrace) {
+                this.expect(TokenType.Comma, "expected comma/closing barcket by following");
+            }
+        }
+
+        this.expect(TokenType.CloseBrace, 'object literal missing');
+
+        return { kind: "ObjectLit", properties } as ObjectLit;
+    }
  
+    // deno-lint-ignore no-explicit-any
     private expect(type: TokenType, err: any) {
         const prev = this.tokens.shift() as Token;
 

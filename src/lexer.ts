@@ -1,14 +1,19 @@
 export enum TokenType {
-	Number,
-	Identifier,
-	Set,
-	Stuck,
+	Number, // 0, 1, 2 ...
+	Identifier, // id
+
+	Set, // set = let
+	Stuck, // stuck = const
+
 	BinaryOperator,
-	Equals,
-	SemiColon,
-	OpenParen,
-	CloseParen,
-	EOF,
+	Equals, // =
+	Comma, Colon,
+	SemiColon, // ;
+	OpenParen, // (
+	CloseParen, // )
+	OpenBrace, // {
+	CloseBrace, // }
+	EOF, // end of file
 }
 
 const KEYWORDS: Record<string, TokenType> = {
@@ -30,7 +35,7 @@ function isal(src: string) {
 }
 
 function isskip(str: string) {
-	return str == " " || str == "\n" || str == "\t" || str == "//";
+	return str == " " || str == "\n" || str == "\t" || str == "\r";
 }
 
 function isint(str: string) {
@@ -48,12 +53,20 @@ export function tokenize(sourceCode: string): Token[] {
 			tokens.push(token(src.shift(), TokenType.OpenParen));
 		} else if (src[0] == ")") {
 			tokens.push(token(src.shift(), TokenType.CloseParen));
+		} else if (src[0] == "{") {
+			tokens.push(token(src.shift(), TokenType.OpenBrace));
+		} else if (src[0] == "}") {
+			tokens.push(token(src.shift(), TokenType.CloseBrace));
 		} else if (src[0] == "+" || src[0] == "-" || src[0] == "*" || src[0] == "/" || src[0] == "%") {
 			tokens.push(token(src.shift(), TokenType.BinaryOperator));
 		} else if (src[0] == "=") {
 			tokens.push(token(src.shift(), TokenType.Equals));
         } else if (src[0] == ";") {
 			tokens.push(token(src.shift(), TokenType.SemiColon));
+        } else if (src[0] == ":") {
+			tokens.push(token(src.shift(), TokenType.Colon));
+        } else if (src[0] == ",") {
+			tokens.push(token(src.shift(), TokenType.Comma));
         } else {
 			if (isint(src[0])) {
 				let num = "";

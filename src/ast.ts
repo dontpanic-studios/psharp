@@ -5,7 +5,9 @@ export type NodeType =
   | "Identifier"
   | "BinaryExpr"
   | "AssignmentExpr"
-  | "VarDelcleation";
+  | "VarDelcleation"
+  | "Property"
+  | "ObjectLit";
 
 export interface stmt {
     kind: NodeType;
@@ -41,9 +43,20 @@ export interface BinaryExpr extends Expr {
 export interface Identifier extends Expr {
     kind: "Identifier";
     symbol: string;
-  }
+}
 
 export interface NumLit extends Expr {
     kind: "NumLit";
     value: number;
+}
+
+export interface ObjectLit extends Expr {
+    kind: "ObjectLit";
+    properties: Property[];
+}
+
+export interface Property extends Expr {
+    kind: "Property";
+    key: string;
+    value?: Expr;
 }
