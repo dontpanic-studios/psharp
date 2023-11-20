@@ -8,6 +8,8 @@ import {
     AssignmentExpr,
     Property,
     ObjectLit,
+    CallFuncExpr,
+    MemberExpr,
   } from "./ast.ts";
 import { tokenize, Token, TokenType } from "./lexer.ts";
 import { VarDelcleation } from "./ast.ts";
@@ -158,11 +160,11 @@ export default class Parser {
     }
 
     private parseMutilExpr() : Expr {
-        let left = this.parsePrim();
+        let left = this.parseCallMemberExpr();
 
         while (this.at().value == "/" || this.at().value == "*" || this.at().value == "%") {
             const operator = this.EnhancedAtFunc().value;
-            const right = this.parsePrim();
+            const right = this.parseCallMemberExpr();
             left = {
                 kind: "BinaryExpr",
                 left,
@@ -174,6 +176,81 @@ export default class Parser {
         return left;
     }
 
+    private parseCallMemberExpr(): Expr {
+        const member = this.parseMemberExpr();
+
+        if(this.at().type == TokenType.OpenParen) {
+            return this.parseCallExpr(member);
+        }
+
+        return member;
+    }
+
+    private parseCallExpr(caller: Expr): Expr {
+        // cool function tho
+        let callExpr: Expr = {
+            kind: "CallFuncExpr",
+            caller,
+            args: this.parseArgs(),
+        } as CallFuncExpr;
+        
+        // hey, isn't this just loop?
+        if (this.at().type == TokenType.OpenParen) {
+            callExpr = this.parseCallExpr(callExpr);
+        }
+
+        return callExpr;
+    }
+
+    private parseArgs(): Expr[] {
+        this.expect(TokenType.OpenParen, "expected open parent");
+        const args = this.at().type == TokenType.CloseParen ? [] : this.parseArgumentList();
+        this.expect(TokenType.CloseParen, "missing close parents.");
+
+        return args;
+    }
+
+    private parseArgumentList(): Expr[] {
+        const args = [this.parseAssignExpr()];
+
+        while(this.notEof() && this.at().type == TokenType.Comma && this.EnhancedAtFunc()) {
+            args.push(this.parseAssignExpr());
+        }   
+
+        return args;
+    }
+
+    private parseMemberExpr(): Expr {
+        let object = this.parsePrim();
+
+        while(this.at().type == TokenType.Dot || this.at().type == TokenType.OpenBracket) {
+            const op = this.EnhancedAtFunc();
+            let property: Expr;
+            let computed: boolean;
+
+            if(op.type == TokenType.Dot) {
+                computed = false;
+                property = this.parsePrim(); // note: this has to get identifier
+
+                if(property.kind != "Identifier") {
+                    throw "psharp.parser: cannot use dot op without right side handler being a id.";
+                }
+            } else {
+                computed = true;
+                property = this.parseExpr();
+                this.expect(TokenType.CloseBracket, "missing closing bracket in computed value");
+            }
+
+            object = {
+                kind: "MemberExpr",
+                obj: object,
+                property,
+                computed,
+            } as MemberExpr;
+        }
+
+        return object;
+    }
 
     private parsePrim() : Expr {
         // parse current token

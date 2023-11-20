@@ -7,6 +7,8 @@ export type NodeType =
   | "AssignmentExpr"
   | "VarDelcleation"
   | "Property"
+  | "MemberExpr"
+  | "CallFuncExpr"
   | "ObjectLit";
 
 export interface stmt {
@@ -37,6 +39,20 @@ export interface BinaryExpr extends Expr {
     kind: "BinaryExpr";
     left: Expr;
     right: Expr;
+    operator: string;
+}
+
+export interface MemberExpr extends Expr {
+    kind: "MemberExpr";
+    obj: Expr;
+    property: Expr;
+    computed: boolean;
+}
+
+export interface CallFuncExpr extends Expr {
+    kind: "CallFuncExpr";
+    args: Expr[];
+    caller: Expr;
     operator: string;
 }
 

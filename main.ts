@@ -27,7 +27,7 @@ import Parser from "./src/parser.ts";
 import { evalhandle } from "./src/runtime/interpreter.ts";
 import { setupGlobalScope } from "./src/runtime/env.ts";
 
-initrun('.\\src\\example.ps')
+initrun('.\\example.ps')
 
 async function initrun(filename: string) {
     const ver = 'v1.0.0';

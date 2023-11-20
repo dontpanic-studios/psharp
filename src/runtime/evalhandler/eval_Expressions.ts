@@ -51,7 +51,6 @@ export function evalObjectExpr(obj: ObjectLit, env: Env): RuntimeValHandle {
     const object =  { type: "object", properties: new Map() } as ObjectValHandle;
 
     for (const { key, value } of obj.properties) {
-        console.log(key, value);
         const runtimeVal = (value == undefined) ? env.lookup(key) : evalhandle(value, env);
 
         object.properties.set(key, runtimeVal);
