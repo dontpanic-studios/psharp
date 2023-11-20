@@ -1,12 +1,7 @@
-stuck foo = 45;
+set foo = 5 * 2;
+foo = foo / 4 + 5
 
-stuck obj = {
-    x: 100,
-    y: 100,
-    foo,
-    complex: {
-        bar: false,
-    },
-};
+prtln(foo, 45)
 
-foo = obj.foo(bar(x, y)) + 5
+stuck curdate = now();
+prtln(curdate)

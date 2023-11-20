@@ -2,7 +2,8 @@
 psharp - environment script
 */
 
-import { RuntimeValHandle } from "./valuelist.ts";
+import { timeFunc } from "../function/curdate.ts";
+import { MK_NATIVEFUNC, RuntimeValHandle } from "./valuelist.ts";
 import { MK_BOOL, MK_NULL } from "./valuelist.ts";
 
 export function setupGlobalScope() {
@@ -11,6 +12,15 @@ export function setupGlobalScope() {
     env.declareVar('true', MK_BOOL(true), true);
     env.declareVar('null', MK_NULL(), true);
     env.declareVar('false', MK_BOOL(false), true);
+
+    // def native func ex) prtln
+    env.declareVar('prtln', MK_NATIVEFUNC((args, scope) => {
+        //console.debug('psharp.env: returning value');
+        console.log(...args);
+        return MK_NULL();
+    }), true);
+
+    env.declareVar('now', MK_NATIVEFUNC(timeFunc), true);
 
     return env;
 }

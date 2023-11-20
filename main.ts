@@ -41,7 +41,7 @@ async function initrun(filename: string) {
         const program = parser.produceAST(input);
         const result = evalhandle(program, env);
     
-        console.log(result);
+        //console.log(result);
     } else {
         console.error("psharp.core: PSharp Interpreter only supports '.ps' file extension.");
     }
@@ -71,7 +71,7 @@ function repl() {
         const program = parse.produceAST(input);
 
         const result = evalhandle(program, env);
-        console.log(result);
+        //console.log(result);
      }
 }
 */

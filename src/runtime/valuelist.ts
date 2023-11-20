@@ -1,4 +1,5 @@
-export type ValueTypes = "null" | "number" | "boolean" | "object";
+import Env from "./env.ts";
+export type ValueTypes = "null" | "number" | "boolean" | "object" | "nativefunc";
 
 export interface RuntimeValHandle {
     type: ValueTypes;
@@ -37,4 +38,15 @@ export function MK_BOOL(b = true) {
 export interface ObjectValHandle extends RuntimeValHandle {
     type: "object";
     properties: Map<string, RuntimeValHandle>;
+}
+
+export type FuncCall = (args: RuntimeValHandle[], env: Env) => RuntimeValHandle
+
+export interface NativeFuncValHandle extends RuntimeValHandle {
+    type: "nativefunc";
+    call: FuncCall;
+}
+
+export function MK_NATIVEFUNC(call: FuncCall) {
+    return { type: "nativefunc", call} as NativeFuncValHandle;
 }

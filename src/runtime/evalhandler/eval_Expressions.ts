@@ -1,5 +1,5 @@
-import { NumValHandle, ObjectValHandle, RuntimeValHandle } from "../valuelist.ts";
-import { Identifier, BinaryExpr, AssignmentExpr, ObjectLit } from "../../ast.ts";
+import { NativeFuncValHandle, NumValHandle, ObjectValHandle, RuntimeValHandle } from "../valuelist.ts";
+import { Identifier, BinaryExpr, AssignmentExpr, ObjectLit, CallFuncExpr } from "../../ast.ts";
 import { evalhandle } from "../interpreter.ts";
 import Env from "../env.ts";
 import { MK_NULL } from "../valuelist.ts";
@@ -57,4 +57,16 @@ export function evalObjectExpr(obj: ObjectLit, env: Env): RuntimeValHandle {
     }
     
     return object;
+}
+
+export function evalCallExpr(expr: CallFuncExpr, env: Env): RuntimeValHandle {
+    const args = expr.args.map((arg) => evalhandle(arg, env));
+    const fn = evalhandle(expr.caller, env) as NativeFuncValHandle;
+
+    if(fn.type != 'nativefunc') {
+        throw "psharp.env.expr: cannot call value that isn't a function, " + JSON.stringify(fn);
+    }
+
+    const result = (fn as NativeFuncValHandle).call(args, env);
+    return result;
 }
