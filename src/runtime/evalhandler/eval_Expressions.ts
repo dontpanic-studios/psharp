@@ -1,4 +1,4 @@
-import { NativeFuncValHandle, NumValHandle, ObjectValHandle, RuntimeValHandle } from "../valuelist.ts";
+import { FuncValHandle, NativeFuncValHandle, NumValHandle, ObjectValHandle, RuntimeValHandle } from "../valuelist.ts";
 import { Identifier, BinaryExpr, AssignmentExpr, ObjectLit, CallFuncExpr } from "../../ast.ts";
 import { evalhandle } from "../interpreter.ts";
 import Env from "../env.ts";
@@ -63,10 +63,26 @@ export function evalCallExpr(expr: CallFuncExpr, env: Env): RuntimeValHandle {
     const args = expr.args.map((arg) => evalhandle(arg, env));
     const fn = evalhandle(expr.caller, env) as NativeFuncValHandle;
 
-    if(fn.type != 'nativefunc') {
+    if(fn.type == 'nativefunc') {
+        const result = (fn as NativeFuncValHandle).call(args, env);
+        return result;
+    } else if(fn.type == 'func') {
+        const funcs = fn as unknown as FuncValHandle; // note: don't know why this errors, but it works so idc lol
+                                                      // note: it fixed.
+		const scope = new Env(funcs.delcenv);
+
+		for (let i = 0; i < funcs.parameters.length; i++) {
+			const varname = funcs.parameters[i];
+			scope.declareVar(varname, args[i], false);
+		}
+
+		let result: RuntimeValHandle = MK_NULL();
+		for (const stmt of funcs.body) {
+			result = evalhandle(stmt, scope);
+		}
+
+		return result;
+    } else {
         throw "psharp.env.expr: cannot call value that isn't a function, " + JSON.stringify(fn);
     }
-
-    const result = (fn as NativeFuncValHandle).call(args, env);
-    return result;
 }

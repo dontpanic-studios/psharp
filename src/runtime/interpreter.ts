@@ -1,9 +1,9 @@
 // deno-lint-ignore-file
 import { RuntimeValHandle, NumValHandle } from './valuelist.ts';
-import { stmt, NumLit, BinaryExpr, Program, Identifier, AssignmentExpr, ObjectLit, CallFuncExpr } from '../ast.ts';
+import { stmt, NumLit, BinaryExpr, Program, Identifier, AssignmentExpr, ObjectLit, CallFuncExpr, FunctionDelc } from '../ast.ts';
 import Env from './env.ts';
 import { VarDelcleation } from '../ast.ts';
-import { evalPrgmExpr, evalVarDeclare } from './evalhandler/eval_Statements.ts';
+import { evalFuncDelc, evalPrgmExpr, evalVarDeclare } from './evalhandler/eval_Statements.ts';
 import { evalId, evalBinExpr, evalAssign, evalObjectExpr, evalCallExpr } from './evalhandler/eval_Expressions.ts';
 
 
@@ -24,6 +24,8 @@ export function evalhandle(astNode: stmt, env: Env): RuntimeValHandle {
             return evalPrgmExpr(astNode as Program, env);
         case "VarDelcleation":
             return evalVarDeclare(astNode as VarDelcleation, env);
+        case "FunctionDelc":
+            return evalFuncDelc(astNode as FunctionDelc, env);
         case "AssignmentExpr":
             return evalAssign(astNode as AssignmentExpr, env);
         default:

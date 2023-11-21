@@ -10,6 +10,7 @@ import {
     ObjectLit,
     CallFuncExpr,
     MemberExpr,
+    FunctionDelc
   } from "./ast.ts";
 import { tokenize, Token, TokenType } from "./lexer.ts";
 import { VarDelcleation } from "./ast.ts";
@@ -53,9 +54,41 @@ export default class Parser {
                 return this.parseVarDeclare();
             case TokenType.Stuck:
                 return this.parseVarDeclare();
+            case TokenType.Func:
+                return this.parseUsrFuncDelc();
             default:
                 return this.parseExpr();
         }
+    }
+
+    parseUsrFuncDelc(): stmt {
+      this.EnhancedAtFunc();
+      const name = this.expect(TokenType.Identifier, 'expected function name following func').value;
+      const args = this.parseArgs();
+      //console.log(args);
+      const params: string[] = [];
+
+      for(const arg of args) {
+        if(arg.kind != "Identifier") {
+            console.log(arg);
+            throw "psharp.parser: expected inside funcation declaration parameters to be of type 'string'.";
+        }
+
+        params.push((arg as Identifier).symbol);
+      }
+
+      this.expect(TokenType.OpenBrace, 'expected body before function');
+      const body: stmt[] = [];
+
+      while(this.at().type != TokenType.EOF && this.at().type != TokenType.CloseBrace) {
+        body.push(this.parseStmt());
+      }
+      this.expect(TokenType.CloseBrace, 'expected closing brace inside function declaration');
+      const func = {
+        body, name, parameters: params, kind: "FunctionDelc"
+      } as FunctionDelc;
+
+      return func;
     }
 
     parseVarDeclare(): stmt {

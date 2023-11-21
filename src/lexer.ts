@@ -4,6 +4,7 @@ export enum TokenType {
 
 	Set, // set = let
 	Stuck, // stuck = const
+	Func, // user function
 
 	BinaryOperator,
 	Equals, // =
@@ -21,6 +22,7 @@ export enum TokenType {
 const KEYWORDS: Record<string, TokenType> = {
 	set: TokenType.Set,
 	stuck: TokenType.Stuck,
+	func: TokenType.Func,
 };
 
 export interface Token {

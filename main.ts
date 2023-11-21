@@ -38,6 +38,10 @@ async function initrun(filename: string) {
 
     if(getExtension(filename) == 'ps') {
         const input = await Deno.readTextFile(filename);
+        if(input.length == 0) {
+            console.warn('psharp.core: no input file, returning null');
+        }
+
         const program = parser.produceAST(input);
         const result = evalhandle(program, env);
     

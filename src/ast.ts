@@ -2,6 +2,7 @@
 export type NodeType =
   | "Program"
   | "NumLit"
+  | "FunctionDelc"
   | "Identifier"
   | "BinaryExpr"
   | "AssignmentExpr"
@@ -31,6 +32,13 @@ export interface VarDelcleation extends stmt {
     constant: boolean;
     id: string;
     value?: Expr;
+}
+
+export interface FunctionDelc extends stmt {
+    kind: "FunctionDelc";
+    parameters: string[];
+    name: string;
+    body: stmt[];
 }
 
 export interface Expr extends stmt {}

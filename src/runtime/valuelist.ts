@@ -1,5 +1,6 @@
+import { stmt } from "../ast.ts";
 import Env from "./env.ts";
-export type ValueTypes = "null" | "number" | "boolean" | "object" | "nativefunc";
+export type ValueTypes = "null" | "number" | "boolean" | "object" | "nativefunc" | "func";
 
 export interface RuntimeValHandle {
     type: ValueTypes;
@@ -49,4 +50,12 @@ export interface NativeFuncValHandle extends RuntimeValHandle {
 
 export function MK_NATIVEFUNC(call: FuncCall) {
     return { type: "nativefunc", call} as NativeFuncValHandle;
+}
+
+export interface FuncValHandle extends RuntimeValHandle {
+    type: "func";
+    name: string;
+    parameters: string[];
+    delcenv: Env;
+    body: stmt[];
 }

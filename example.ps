@@ -1,7 +1,11 @@
-set foo = 5 * 2;
-foo = foo / 4 + 5
+func add(x, y) {
+    set result = x + y;
+    prtln(result)
 
-prtln(foo, 45)
+    result
+}
 
-stuck curdate = now();
-prtln(curdate)
+set result = add(5, 3);
+result = result + 5
+
+prtln(result)
