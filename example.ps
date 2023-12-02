@@ -1,11 +1,6 @@
-func add(x, y) {
-    set result = x + y;
-    prtln(result)
-
-    result
+func localfunc(x) {
+    set xval = x;
+    prtln(x)
 }
 
-set result = add(5, 3);
-result = result + 5
-
-prtln(result)
+localfunc()
